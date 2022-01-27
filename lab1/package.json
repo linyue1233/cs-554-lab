@@ -1,0 +1,17 @@
+{
+  "name": "cs-554-lab1",
+  "version": "1.0.0",
+  "description": "cs-554-a-lab1 Yue Lin  10479231",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yue Lin",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "mongodb": "^3.6.12"
+  }
+}
