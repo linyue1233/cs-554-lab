@@ -19,6 +19,13 @@ module.exports = {
         if (!this.checkName(password)) {
             throw `your password is invalid`;
         }
+        if( !this.checkUserName(username)) {
+            throw `your username is invalid`;
+        }
+        if( !this.checkPassword(password)) {
+            throw `your password is invalid`;
+        }
+
         //check dumplite username
         const allUsers = await users();
         const usersList = await allUsers.find({}).toArray();
@@ -27,7 +34,7 @@ module.exports = {
         for (let item of usersList) {
             let tempUserName = item.username.toLowerCase();
             if (tempUserName === lowerUserName) {
-                return { userInserted: false };
+                throw `there is a same username,please change another one`;
             }
         }
 
@@ -41,9 +48,9 @@ module.exports = {
         if (addRes.insertedCount === 0) {
             throw `can not add a new user`;
         }
-        const newBlogId = addRes.insertedId.toString();
-        const addedBlog = await this.getBlog(newBlogId);
-        return addedBlog;
+        const newUserId = addRes.insertedId.toString();
+        const addedUser = await this.getUserById(newUserId);
+        return addedUser;
     },
 
     async checkUser(username, password) {
@@ -54,6 +61,13 @@ module.exports = {
             throw `your username is invalid`;
         }
         if (!this.checkName(password)) {
+            throw `your password is invalid`;
+        }
+
+        if( !this.checkUserName(username)) {
+            throw `your username is invalid`;
+        }
+        if( !this.checkPassword(password)) {
             throw `your password is invalid`;
         }
         const allUsers = await users();
@@ -130,5 +144,36 @@ module.exports = {
         if (typeof id !== 'string') throw "Id must be a string";
         let parsedId = ObjectId(id);
         return parsedId;
+    },
+
+    checkUserName(username) {
+        if (username.trim() === "") {
+            return false;
+        }
+        let temp = username;
+        if (temp.split(" ").length > 1) {
+            return false;
+        }
+        if (username.length < 4) {
+            return false;
+        }
+        if (!username.match(/^[0-9a-zA-z]+$/)) {
+            return false;
+        }
+        return true;
+    },
+
+    checkPassword(password) {
+        if (password.trim() === "") {
+            return false;
+        }
+        let temp = password;
+        if (temp.split(" ").length > 1) {
+            return false;
+        }
+        if (password.length < 6) {
+            return false;
+        }
+        return true;
     }
 }

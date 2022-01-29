@@ -99,15 +99,14 @@ module.exports = {
             title: title,
             body: body
         }
-        await getBlog(blogId);
-
+        await this.getBlog(blogId);
         const blogCollection = await blogs();
         const updateInfo = await blogCollection.updateOne(
             { _id: this.myDBfunction(blogId) },
             { $set: updateBlog }
         );
         if (updateInfo.modifiedCount == 0) {
-            throw 'could not update blog successfully';
+            throw 'The provided blog information is same as the database, so you could not update blog successfully';
         }
 
         return await this.getBlog(blogId);
@@ -122,7 +121,7 @@ module.exports = {
         if (title === undefined && body === undefined) {
             throw `You should provide a parameter at least`;
         }
-        const oldBlogInfo = await getBlog(blogId);
+        const oldBlogInfo = await this.getBlog(blogId);
         if (title === undefined || title === null) {
             if (Object.prototype.toString.call(body) !== '[object String]')
                 body = body.trim();
@@ -146,7 +145,7 @@ module.exports = {
             { $set: updateBlog }
         );
         if (updateInfo.modifiedCount == 0) {
-            throw 'could not update blog successfully';
+            throw 'The provided blog information is same as the database, so you could not update blog successfully';
         }
 
         return await this.getBlog(blogId);
