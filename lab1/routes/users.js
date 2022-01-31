@@ -104,11 +104,11 @@ router.post("/", async (req, res) => {
     }
     let title = blogInfo.title;
     let body = blogInfo.body;
-    if (!title) {
+    if (title === undefined) {
         res.status(400).json({ error: 'You must provide a title for the blog' });
         return;
     }
-    if (!body) {
+    if (body === undefined) {
         res.status(400).json({ error: 'You must provide the content for the blog' });
         return;
     }
@@ -205,7 +205,7 @@ router.put("/:id", async (req, res) => {
     try {
         let blogOwner = await userData.getUserById(oldBlogInfo.userThatPosted._id);
         if (curUser._id !== blogOwner._id) {
-            res.status(403).json({ error: "You must be the same user who originally posted the blog post" })
+            res.status(401).json({ error: "You must be the same user who originally posted the blog post" })
             return;
         }
         const updateBlog = await blogData.putBlog(req.params.id, title, body);
@@ -277,7 +277,7 @@ router.patch("/:id", async (req, res) => {
     try {
         let blogOwner = await userData.getUserById(oldBlogInfo.userThatPosted._id);
         if (curUser._id !== blogOwner._id) {
-            res.status(403).json({ error: "You must be the same user who originally posted the blog post" })
+            res.status(401).json({ error: "You must be the same user who originally posted the blog post" })
             return;
         }
         const updateBlog = await blogData.patchBlog(req.params.id, title, body);
@@ -350,12 +350,12 @@ router.delete("/:blogId/:commentId", async (req, res) => {
         return;
     }
     if (curUser._id !== deletedComment.userThatPostedComment._id.toString()) {
-        res.status(403).json({ error: `This comemnt dose not belong to you, you cannot modify it` });
+        res.status(401).json({ error: `This comemnt dose not belong to you, you cannot modify it` });
         return;
     }
     try {
         await commentData.deletedComment(commentId);
-        res.status(200).send(`You have deleted comment successfully`);
+        res.status(200).json({"Notification":`You have deleted comment successfully`});
         return;
     } catch (e) {
         res.status(500).json({ error: e.message });
@@ -406,7 +406,7 @@ router.post("/signup", async (req, res) => {
         res.json(returnUser);
         return;
     } catch (e) {
-        res.status(404).json({ error: e });
+        res.status(400).json({ error: e });
     }
 });
 
