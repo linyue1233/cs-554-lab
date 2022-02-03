@@ -201,6 +201,7 @@ router.put("/:id", async (req, res) => {
         oldBlogInfo = await blogData.getBlog(req.params.id);
     } catch (e) {
         res.status(404).json({ error: e });
+        return;
     }
     try {
         let blogOwner = await userData.getUserById(oldBlogInfo.userThatPosted._id);
