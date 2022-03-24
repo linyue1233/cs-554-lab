@@ -1,10 +1,12 @@
 import React from 'react';
 import logo from './img/tvm-header-logo.png';
 import './App.css';
-import ShowList from './components/ShowList';
-import Show from './components/Show';
 import Home from './components/Home';
-import {BrowserRouter as Router, Route, Link, Routes} from 'react-router-dom';
+import Characters from './components/Characters';
+import ShowCharacter from './components/ShowCharacter';
+import Comics from './components/Comics';
+import ShowComic from './components/ShowComic';
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 const App = () => {
   return (
@@ -18,8 +20,14 @@ const App = () => {
           <Link className='showlink' to='/'>
             Home
           </Link>
-          <Link className='showlink' to='/shows/page/0'>
-            Shows
+          <Link className='showlink' to='/characters/page/0'>
+            Characters
+          </Link>
+          <Link className='showlink' to='/comics/page/0'>
+            Comics
+          </Link>
+          <Link className='showlink' to='/series/page/0'>
+            Series
           </Link>
         </header>
         <br />
@@ -27,8 +35,11 @@ const App = () => {
         <div className='App-body'>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route path='/shows/page/:pagenum' element={<ShowList />} />
-            <Route path='/shows/:id' element={<Show />} />
+            <Route path='/characters/page/:pageNum' element={<Characters />} />
+            <Route path='/characters/:characterId' element={<ShowCharacter />} /> 
+            <Route path='/comics/page/:pageNum' element={<Comics />} />
+            <Route path='/comics/:comicId' element={<ShowComic />} /> 
+            {/* <Route path='/shows/:id' element={<Show />} /> */}
           </Routes>
         </div>
       </div>

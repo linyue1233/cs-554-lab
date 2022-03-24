@@ -9,7 +9,10 @@
 		"@testing-library/react": "^9.3.2",
 		"@testing-library/user-event": "^7.1.2",
 		"axios": "^0.19.2",
+		"blueimp-md5": "^2.19.0",
+		"nodemon": "^2.0.15",
 		"react": "^16.13.0",
+		"react-bootstrap": "^2.2.1",
 		"react-dom": "^16.13.0",
 		"react-router-dom": "^6.2.1",
 		"react-scripts": "^3.4.3"

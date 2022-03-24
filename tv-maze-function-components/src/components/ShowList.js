@@ -70,24 +70,21 @@ const ShowList = () => {
         setNotFound(false);
         setShowPage(true);
       } catch (e) {
-        if(e.response.status === 404){
+        if (e.response.status === 404) {
           setNotFound(true);
         }
-      }finally {
+      } finally {
         setLoading(false);
       }
     }
-    if( +pagenum === 0){
+    if (+pagenum === 0) {
       setUpDisabled(true);
-    }else if(notFound) {
+    } else if (notFound) {
       setUpDisabled(true);
       setDownDisabled(true);
-    }else{
+    } else {
       setUpDisabled(false);
       setDownDisabled(false);
-    }
-    if(+pagenum === 243){
-      setDownDisabled(true);
     }
     fetchData();
   }, [pagenum]);
@@ -110,17 +107,17 @@ const ShowList = () => {
       console.log('searchTerm is set');
       fetchData();
       setShowPage(false);
-    }else{
+    } else {
       setShowPage(true);
     }
   }, [searchTerm]);
-  
+
   // monitor not found
   useEffect(() => {
-    if(notFound) {
+    if (notFound) {
       setDownDisabled(true);
     }
-  },[notFound]);
+  }, [notFound]);
 
   const changedPage = count => nagivate(`/shows/page/${+pagenum + count}`);
 
@@ -184,7 +181,7 @@ const ShowList = () => {
 
 
 
-  if (loading || notFound || pagenum <0) {
+  if (loading || notFound || pagenum < 0) {
     return (
       <div>
         <h2>{loading ? 'Loading....' : '404 - your page not found'}</h2>
@@ -200,8 +197,8 @@ const ShowList = () => {
           {card}
         </Grid>
         {/* add button for page */}
-        {pagenum && showPage && <PageHelper upDisabled = {upDisabled} downDisabled = {downDisabled}  changedPage= {changedPage}></PageHelper>}
-      </div>  
+        {pagenum && showPage && <PageHelper upDisabled={upDisabled} downDisabled={downDisabled} changedPage={changedPage}></PageHelper>}
+      </div>
     );
   }
 };

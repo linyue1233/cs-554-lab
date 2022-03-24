@@ -1,22 +1,11 @@
 import { Box,Button } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
-import { createMuiTheme } from '@material-ui/core';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-const theme = createMuiTheme({
-  palette: {
-    secondary: {
-      light: '#ff7961',
-      main: '#f44336',
-      dark: '#ba000d',
-      contrastText: '#000',
-    },
-  },
-});
 const useStyles = makeStyles((theme) => ({
     root: {
       '& > *': {
-        margin: theme.spacing(2),
+        margin: theme.spacing(1),
       },
     },
   }));
