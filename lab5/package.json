@@ -1,0 +1,11 @@
+{
+  "name": "cs554lab5",
+  "version": "1.0.0",
+  "description": "CS-554-A-Lab5 Yue Lin 10479231",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yue Lin 10479231",
+  "license": "ISC"
+}
