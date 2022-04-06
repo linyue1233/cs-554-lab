@@ -7,5 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Yue Lin 10479231",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+  }
 }
