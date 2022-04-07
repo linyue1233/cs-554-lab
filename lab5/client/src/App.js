@@ -1,13 +1,15 @@
 import {NavLink, BrowserRouter as Router, Route} from 'react-router-dom';
 import './App.css';
+import Home from './components/Home';
+import MyBin from './components/MyBin';
+import MyPosts from './components/MyPosts';
+import NewPost from './components/NewPost';
 import {
   ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  useQuery,
   HttpLink,
-  gql
-} from "@apollo/client";
+  InMemoryCache,
+  ApolloProvider
+} from '@apollo/client';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -18,7 +20,7 @@ const client = new ApolloClient({
 
 function App() {
   return (
-    <ApolloClient client={client}>
+    <ApolloProvider client={client}>
       <Router>
         <div>
           <header className='App-header'>
@@ -27,27 +29,27 @@ function App() {
             </h1>
             <nav>
               <NavLink className='navlink' to='/'>
-                /Home
+                Home
               </NavLink>
               <NavLink className='navlink' to='/my-bin'>
-                /my-bin
+                my-bin
               </NavLink>
 
               <NavLink className='navlink' to='/my-posts'>
-                /my-post
+                my-post
               </NavLink>
               <NavLink className='navlink' to='/new-post'>
-                /new-post
+                new-post
               </NavLink>
             </nav>
           </header>
-          <Route path='/' component={Home}></Route>
+          <Route exact path='/' component={Home}></Route>
           <Route path='/my-bin' component={MyBin}></Route>
           <Route path='/my-posts' component={MyPosts}></Route>
           <Route path='/new-post' component={NewPost}></Route>
         </div>
       </Router>
-    </ApolloClient>
+    </ApolloProvider>
   );
 }
 
