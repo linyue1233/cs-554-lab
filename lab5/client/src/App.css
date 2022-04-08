@@ -36,6 +36,19 @@
   color: #61dafb;
 }
 
+.cardImg {
+    max-width: 50%;
+    height: auto;
+    width: 60%;
+    margin: auto;
+    display: block;
+}
+
+.textPost {
+  text-align:center;
+  margin:0 auto;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

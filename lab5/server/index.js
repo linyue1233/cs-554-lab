@@ -21,6 +21,7 @@ const typeDefs = gql`
     type ImagePost{
         id: ID!
         url: String!
+        description: String!
         posterName: String!
         userPosted: Boolean!
         binned: Boolean!
@@ -40,30 +41,33 @@ const resolvers = {
             let pageNum = args.pageNum;
             let data = await unsplashApi.photos.list({ page: pageNum, perPage: 15 });
             let results = data.response.results;
-            let ans = results.map(e => { return { id: e.id, url: e.urls.raw, posterName: e.user.username, description: e.description, userPosted: false, binned: false } });
+            console.log(results);
+            let ans = results.map(e => { return { id: e.id, url: e.urls.raw, posterName: e.user.username, description: e.description == null ? "No description" : e.description, userPosted: false, binned: false } });
             return ans;
         },
+
         binnedImages: async () => {
             let ans = [];
-            await client.lrange('benchMoon', 0, -1, (error, imageBin) => {
-                for (let item of imageBin) {
-                    let temp = JSON.parse(item);
-                    if (temp.binned) {
-                        ans.push(temp);
-                    }
+            let imageBin = await getRes();
+            for (let item of imageBin) {
+                let temp = JSON.parse(item);
+                if (temp.binned) {
+                    ans.push(temp);
                 }
-            });
+            }
             return ans;
         },
+
         userPostedImages: async () => {
-            const value = await client.lrange('benchMoon', 0, -1, (error, data) => {
-                let ans = [];
-                for (let item of data) {
-                    ans.push(JSON.parse(item));
+            let ans = [];
+            let imageBin = await getRes();
+            for (let item of imageBin) {
+                let temp = JSON.parse(item);
+                if (temp.userPosted) {
+                    ans.push(temp);
                 }
-                return ans;
-            });
-            return value;
+            }
+            return ans;
         },
     },
     Mutation: {
@@ -83,22 +87,23 @@ const resolvers = {
         updateImage: async (_, args) => {
             let oldPost;
             let newPost = { id: args.id, url: args.url, posterName: args.posterName, description: args.description, binned: args.binned, userPosted: args.userPosted };
-            await client.lrange('benchMoon', 0, -1, (error, data) => {
-                for (let item of data) {
-                    let temp = JSON.parse(item);
-                    if (temp.id == args.id) {
-                        oldPost = temp;
-                    }
+            let allPosts = await getRes();
+            for (let item of allPosts) {
+                let temp = JSON.parse(item);
+                if (temp.id == args.id) {
+                    oldPost = temp;
+                    break;
                 }
-                // scene1
-                if (oldPost === undefined && args.binned) {
-                    client.lpush(args.posterName, JSON.stringify(newPost));
-                }
-                // scene2
-                if (!args.binned && !args.userPosted && oldPost != undefined) {
-                    client.lrem('benchMoon', 0, JSON.stringify(oldPost));
-                }
-            });
+            }
+            console.log(oldPost);
+            // means add to bin
+            if (oldPost == undefined && args.binned) {
+                await client.lpush('benchMoon', JSON.stringify(newPost));
+            }
+            // remove from bin
+            if (oldPost != undefined && !args.binned) {
+                await client.lrem('benchMoon', 0, JSON.stringify(oldPost));
+            }
             return newPost;
         },
         deleteImage: async (_, args) => {
@@ -108,6 +113,7 @@ const resolvers = {
                 let temp = JSON.parse(item);
                 if (temp.id == args.id) {
                     deletedPost = temp;
+                    break;
                 }
             }
             await client.lrem('benchMoon', 0, JSON.stringify(deletedPost));

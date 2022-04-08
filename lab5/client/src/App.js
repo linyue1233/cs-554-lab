@@ -43,9 +43,9 @@ function App() {
               </NavLink>
             </nav>
           </header>
-          <Route exact path='/' component={Home}></Route>
-          <Route path='/my-bin' component={MyBin}></Route>
-          <Route path='/my-posts' component={MyPosts}></Route>
+          <Route exact path='/' render={()=><Home param={1}/>}></Route>
+          <Route exact path='/my-bin' render={()=><Home param={2}/>}></Route>
+          <Route exact path='/my-posts' render={()=><Home param={3}/>}></Route>
           <Route path='/new-post' component={NewPost}></Route>
         </div>
       </Router>
