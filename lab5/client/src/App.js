@@ -1,8 +1,6 @@
 import {NavLink, BrowserRouter as Router, Route} from 'react-router-dom';
 import './App.css';
 import Home from './components/Home';
-import MyBin from './components/MyBin';
-import MyPosts from './components/MyPosts';
 import NewPost from './components/NewPost';
 import {
   ApolloClient,

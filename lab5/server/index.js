@@ -41,14 +41,13 @@ const resolvers = {
             let pageNum = args.pageNum;
             let data = await unsplashApi.photos.list({ page: pageNum, perPage: 15 });
             let results = data.response.results;
-            console.log(results);
             let ans = results.map(e => { return { id: e.id, url: e.urls.raw, posterName: e.user.username, description: e.description == null ? "No description" : e.description, userPosted: false, binned: false } });
             return ans;
         },
 
         binnedImages: async () => {
             let ans = [];
-            let imageBin = await getRes();
+            let imageBin = await getRes('benchMoonBin');
             for (let item of imageBin) {
                 let temp = JSON.parse(item);
                 if (temp.binned) {
@@ -60,7 +59,7 @@ const resolvers = {
 
         userPostedImages: async () => {
             let ans = [];
-            let imageBin = await getRes();
+            let imageBin = await getRes('benchMoon');
             for (let item of imageBin) {
                 let temp = JSON.parse(item);
                 if (temp.userPosted) {
@@ -87,32 +86,54 @@ const resolvers = {
         updateImage: async (_, args) => {
             let oldPost;
             let newPost = { id: args.id, url: args.url, posterName: args.posterName, description: args.description, binned: args.binned, userPosted: args.userPosted };
-            let allPosts = await getRes();
-            for (let item of allPosts) {
+            let allBinPosts = await getRes('benchMoonBin');
+            for (let item of allBinPosts) {
                 let temp = JSON.parse(item);
                 if (temp.id == args.id) {
                     oldPost = temp;
                     break;
                 }
             }
-            console.log(oldPost);
-            // means add to bin
-            if (oldPost == undefined && args.binned) {
-                await client.lpush('benchMoon', JSON.stringify(newPost));
-            }
-            // remove from bin
-            if (oldPost != undefined && !args.binned) {
-                await client.lrem('benchMoon', 0, JSON.stringify(oldPost));
+            // from userPost
+            if(args.userPosted){
+                let allUserPosts = await getRes('benchMoon');
+                // delete from bin
+                if( oldPost != undefined && !args.binned){
+                    await client.lrem('benchMoonBin', 0, JSON.stringify(oldPost));
+                }
+                // add into bin
+                if( oldPost == undefined && args.binned){
+                    await client.lpush('benchMoonBin', JSON.stringify(newPost));
+                }
+                // update userpost key
+                for (let index in allUserPosts) {
+                    let temp = JSON.parse(allUserPosts[index]);
+                    if (temp.id == args.id) {
+                        allUserPosts[index] = JSON.stringify(newPost);
+                    }
+                }
+                await client.del('benchMoon');
+                for(let item of allUserPosts){
+                    client.rpush('benchMoon',item);
+                }
+            }else{
+                // from unsplash site
+                if (oldPost == undefined && args.binned) {
+                    await client.lpush('benchMoonBin', JSON.stringify(newPost));
+                }else if(oldPost != undefined && !args.binned){
+                    await client.lrem('benchMoonBin', 0, JSON.stringify(oldPost));
+                }
             }
             return newPost;
         },
         deleteImage: async (_, args) => {
             let deletedPost;
-            let allPosts = await getRes();
+            let allPosts = await getRes('benchMoon');
             for (let item of allPosts) {
                 let temp = JSON.parse(item);
                 if (temp.id == args.id) {
                     deletedPost = temp;
+                    console.log(111);
                     break;
                 }
             }
@@ -122,9 +143,9 @@ const resolvers = {
     }
 }
 
-const getRes = async () => {
+const getRes = async (redisName) => {
     return await new Promise(resolve => {
-        client.lrange('benchMoon', 0, -1, (error, items) => {
+        client.lrange(redisName, 0, -1, (error, items) => {
             if (!error) {
                 resolve(items);
             } else {
