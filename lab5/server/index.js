@@ -28,7 +28,7 @@ const typeDefs = gql`
     }
     
     type Mutation{
-        uploadImage(url: String!, description: String, posterName: String): ImagePost 
+        uploadImage(url: String!, description: String!, posterName: String!): ImagePost 
         updateImage(id: ID!, url: String, posterName: String, description: String, userPosted: Boolean, binned: Boolean): ImagePost
         deleteImage(id: ID!): ImagePost
     }

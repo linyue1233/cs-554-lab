@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../App.css';
 import DeletePostModal from './DeletePostModal';
+import AddPostModal from './AddPostModal';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import querys from '../querys';
 import {
@@ -18,6 +19,7 @@ function Home(props) {
     const [pageNum, setPageNum] = useState(0);
     const [deletePost, setDeletePost] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
     let showData = null;
 
     const { loading: loading1, error: error1, data: unsplashData } = useQuery(querys.GET_UNSPLASHPOSTS, {
@@ -34,7 +36,6 @@ function Home(props) {
     });
 
     const [updateImage] = useMutation(querys.UPDATE_IMAGETWITHBIN);
-    const [deleteImage] = useMutation(querys.DELETE_POST);
 
     const readMoreBtn = (count) => {
         setPageNum(count + pageNum);
@@ -55,13 +56,17 @@ function Home(props) {
 
     const handleCloseModals = () => {
         setShowDeleteModal(false);
+        setShowAddModal(false);
     };
 
     const handleOpenDeleteModal = (singalPost) => {
         setShowDeleteModal(true);
-        console.log(singalPost);
         setDeletePost(singalPost);
     };
+
+    const handleOpenAddModal = () => {
+        setShowAddModal(true);
+    }
 
 
     const buildPage = (imagePost) => {
@@ -136,6 +141,12 @@ function Home(props) {
     if ((props.param == 1 && unsplashData) || (props.param == 2 && binData) || (props.param == 3 && postData)) {
         return (
             <div>
+                {props.param == 3 &&
+                    <Button variant="outlined" margin="0 auto"
+                        className='button'
+                        onClick={handleOpenAddModal}>
+                        New Post
+                    </Button>}
                 {showData}
                 {
                     props.param == 1 &&
@@ -143,6 +154,15 @@ function Home(props) {
                         Read More
                     </Button>
                 }
+
+                {showAddModal && showAddModal && (
+                    <AddPostModal
+                        isOpen={showAddModal}
+                        handleClose={handleCloseModals}
+                        modal='newPost'
+                    />
+                )}
+
                 {showDeleteModal && showDeleteModal && (
                     <DeletePostModal
                         isOpen={showDeleteModal}

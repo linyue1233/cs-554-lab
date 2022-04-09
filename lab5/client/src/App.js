@@ -36,15 +36,11 @@ function App() {
               <NavLink className='navlink' to='/my-posts'>
                 my-post
               </NavLink>
-              <NavLink className='navlink' to='/new-post'>
-                new-post
-              </NavLink>
             </nav>
           </header>
           <Route exact path='/' render={()=><Home param={1}/>}></Route>
           <Route exact path='/my-bin' render={()=><Home param={2}/>}></Route>
           <Route exact path='/my-posts' render={()=><Home param={3}/>}></Route>
-          <Route path='/new-post' component={NewPost}></Route>
         </div>
       </Router>
     </ApolloProvider>
