@@ -1,7 +1,7 @@
 import {NavLink, BrowserRouter as Router, Route} from 'react-router-dom';
 import './App.css';
 import Home from './components/Home';
-import NewPost from './components/NewPost';
+import AddPost from './components/AddPost';
 import {
   ApolloClient,
   HttpLink,
@@ -41,6 +41,7 @@ function App() {
           <Route exact path='/' render={()=><Home param={1}/>}></Route>
           <Route exact path='/my-bin' render={()=><Home param={2}/>}></Route>
           <Route exact path='/my-posts' render={()=><Home param={3}/>}></Route>
+          <Route exact path='/new-post' render={()=><AddPost/>}></Route>
         </div>
       </Router>
     </ApolloProvider>

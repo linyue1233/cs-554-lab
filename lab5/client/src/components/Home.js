@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import '../App.css';
 import DeletePostModal from './DeletePostModal';
-import AddPostModal from './AddPostModal';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import querys from '../querys';
 import {
@@ -19,7 +18,6 @@ function Home(props) {
     const [pageNum, setPageNum] = useState(0);
     const [deletePost, setDeletePost] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showAddModal, setShowAddModal] = useState(false);
     let showData = null;
 
     const { loading: loading1, error: error1, data: unsplashData } = useQuery(querys.GET_UNSPLASHPOSTS, {
@@ -56,17 +54,12 @@ function Home(props) {
 
     const handleCloseModals = () => {
         setShowDeleteModal(false);
-        setShowAddModal(false);
     };
 
     const handleOpenDeleteModal = (singalPost) => {
         setShowDeleteModal(true);
         setDeletePost(singalPost);
     };
-
-    const handleOpenAddModal = () => {
-        setShowAddModal(true);
-    }
 
 
     const buildPage = (imagePost) => {
@@ -143,9 +136,8 @@ function Home(props) {
             <div>
                 {props.param == 3 &&
                     <Button variant="outlined" margin="0 auto"
-                        className='button'
-                        onClick={handleOpenAddModal}>
-                        New Post
+                        className='button'>
+                        <a href="/new-post">New Post</a>
                     </Button>}
                 {showData}
                 {
@@ -154,14 +146,6 @@ function Home(props) {
                         Read More
                     </Button>
                 }
-
-                {showAddModal && showAddModal && (
-                    <AddPostModal
-                        isOpen={showAddModal}
-                        handleClose={handleCloseModals}
-                        modal='newPost'
-                    />
-                )}
 
                 {showDeleteModal && showDeleteModal && (
                     <DeletePostModal
@@ -172,14 +156,11 @@ function Home(props) {
                 )}
             </div>
         )
-    } else if (loading1) {
+    } else if ((props.param == 1 && loading1) || (props.param == 2 && loading2) || ((props.param == 3 && loading3))) {
         return <div>Loading</div>;
-    } else if (error1) {
-        return <div>{error1.message}</div>;
+    } else if ((props.param == 1 && error1) || (props.param == 2 && error2) || (props.param == 3 && error3) ) {
+        return <div>{error1.message || error2.message || error3.message}</div>;
     }
-
-
-
 }
 
 
