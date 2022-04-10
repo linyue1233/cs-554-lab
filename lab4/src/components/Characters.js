@@ -149,42 +149,93 @@ const Characters = () => {
 
     const buildCard = (show) => {
         return (
-            <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={show.id}>
-                <Card className={classes.card} variant='outlined'>
-                    <CardActionArea>
-                        {/* <Link to={`/characters/${show.id}`}> */}
-                        <Link to={`/characters/${show.id}`}>
-                            <CardMedia
-                                className={classes.media}
-                                component='img'
-                                image={
-                                    show.thumbnail && show.thumbnail.path
-                                        ? show.thumbnail.path + '.' + show.thumbnail.extension
-                                        : noImage
-                                }
-                                title='show image'
-                            />
+            // <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={show.id}>
+            //     <Card className={classes.card} variant='outlined'>
+            //         <CardActionArea>
+            //             {/* <Link to={`/characters/${show.id}`}> */}
+            //             <Link to={`/characters/${show.id}`}>
+            //                 <CardMedia
+            //                     className={classes.media}
+            //                     component='img'
+            //                     image={
+            //                         show.thumbnail && show.thumbnail.path
+            //                             ? show.thumbnail.path + '.' + show.thumbnail.extension
+            //                             : noImage
+            //                     }
+            //                     title='show image'
+            //                 />
 
-                            <CardContent>
-                                <Typography
-                                    className={classes.titleHead}
-                                    gutterBottom
-                                    variant='h6'
-                                    component='h2'
-                                >
-                                    {show.name}
-                                </Typography>
-                                <Typography variant='body2' color='textSecondary' component='p'>
-                                    {show.description
-                                        ? show.description.replace(regex, '').substring(0, 139) + '...'
-                                        : 'No Description'}
-                                    <span>More Info</span>
-                                </Typography>
-                            </CardContent>
-                        </Link>
-                    </CardActionArea>
-                </Card>
-            </Grid>
+            //                 <CardContent>
+            //                     <Typography
+            //                         className={classes.titleHead}
+            //                         gutterBottom
+            //                         variant='h6'
+            //                         component='h2'
+            //                     >
+            //                         {show.name}
+            //                     </Typography>
+            //                     <Typography variant='body2' color='textSecondary' component='p'>
+            //                         {show.description
+            //                             ? show.description.replace(regex, '').substring(0, 139) + '...'
+            //                             : 'No Description'}
+            //                         <span>More Info</span>
+            //                     </Typography>
+            //                 </CardContent>
+            //             </Link>
+            //         </CardActionArea>
+            //     </Card>
+            // </Grid>
+            <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={show.id}>
+            <Card className={classes.card} variant='outlined'>
+                <CardActionArea>
+                    {/* <Link to={`/characters/${show.id}`}> */}
+                        <CardMedia
+                            className={classes.media} 
+                            component='img'
+                            image={
+                                imagePost.url && imagePost.url
+                            }
+                            title='show image'
+                        />
+
+                        <CardContent>
+                        <div>
+                        {!imagePost.binned && (
+                            < Button
+                                className='button'
+                                onClick={() => {
+                                    handleUnpdateBin(imagePost);
+                                }}
+                            >
+                                Add to Bin
+                            </Button>
+                        )
+                        }
+                        {/* in bin */}
+                        {imagePost.binned && (
+                            < Button
+                                className='button'
+                                onClick={() => {
+                                    handleUnpdateBin(imagePost);
+                                }}
+                            >
+                                Remove from Bin
+                            </Button>
+                        )
+                        }
+                        {props.param == 3 && imagePost.posterName == 'benchMoon' &&
+                            <Button
+                                className='button'
+                                onClick={() => { handleOpenDeleteModal(imagePost) }}
+                            >
+                                Delete Image
+                            </Button>
+                        }
+                    </div>
+                        </CardContent>
+                </CardActionArea>
+            </Card>
+        </Grid>
         );
     };
 

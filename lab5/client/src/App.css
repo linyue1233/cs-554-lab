@@ -37,11 +37,9 @@
 }
 
 .cardImg {
-    max-width: 50%;
-    height: auto;
-    width: 60%;
-    margin: auto;
-    display: block;
+  width: 180px;
+  height: 380px;
+  margin-right: 10px;
 }
 
 .textPost {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../App.css';
 import DeletePostModal from './DeletePostModal';
 import { gql, useQuery, useMutation } from '@apollo/client';
@@ -14,13 +14,47 @@ import {
     Button
 } from '@material-ui/core';
 
+const useStyles = makeStyles({
+    card: {
+        maxWidth: 550,
+        height: 'auto',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        borderRadius: 5,
+        border: '1px solid #178577',
+        boxShadow: '0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);'
+    },
+    titleHead: {
+        color: '#178577',
+        borderBottom: '1px solid #178577',
+        fontWeight: 'bold'
+    },
+    grid: {
+        flexGrow: 1,
+        flexDirection: 'row'
+    },
+    media: {
+        width: '500px',
+        height: '380px',
+        marginRight: '10px'
+    },
+    button: {
+        color: 'green',
+        fontWeight: 'bold',
+        fontSize: 12
+    }
+});
+
 function Home(props) {
-    const [pageNum, setPageNum] = useState(0);
+    const [pageNum, setPageNum] = useState(1);
     const [deletePost, setDeletePost] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [dataList, setDataList] = useState([]);
+    const classes = useStyles();
+    const [fetchStatus, setfetchStatus] = useState(true);
     let showData = null;
 
-    const { loading: loading1, error: error1, data: unsplashData } = useQuery(querys.GET_UNSPLASHPOSTS, {
+    const { loading: loading1, error: error1, data: unsplashData, refetch } = useQuery(querys.GET_UNSPLASHPOSTS, {
         variables: { pageNum },
         fetchPolicy: 'cache-first'
     });
@@ -35,8 +69,8 @@ function Home(props) {
 
     const [updateImage] = useMutation(querys.UPDATE_IMAGETWITHBIN);
 
-    const readMoreBtn = (count) => {
-        setPageNum(count + pageNum);
+    const readMoreBtn = () => {
+        setPageNum(1 + pageNum);
     };
 
     const handleUnpdateBin = (singalPost) => {
@@ -61,17 +95,16 @@ function Home(props) {
         setDeletePost(singalPost);
     };
 
-
     const buildPage = (imagePost) => {
         return (
-            <div className='card textPost' key={imagePost.id}>
+            <div className='card' key={imagePost.id}>
                 <div className='card-body'>
                     <h5 className='card-title'>
                         Description:{imagePost.description}
                     </h5>
                     Author: {imagePost.posterName}
                     <br />
-                    <CardMedia className='cardImg'
+                    <CardMedia className={classes.media}
                         component='img'
                         image={
                             imagePost.url && imagePost.url
@@ -80,8 +113,7 @@ function Home(props) {
                     />
                     <div>
                         {!imagePost.binned && (
-                            < button
-                                className='button'
+                            < button className="btn btn-primary"
                                 onClick={() => {
                                     handleUnpdateBin(imagePost);
                                 }}
@@ -92,8 +124,7 @@ function Home(props) {
                         }
                         {/* in bin */}
                         {imagePost.binned && (
-                            < button
-                                className='button'
+                            < button className="btn btn-secondary"
                                 onClick={() => {
                                     handleUnpdateBin(imagePost);
                                 }}
@@ -103,8 +134,7 @@ function Home(props) {
                         )
                         }
                         {props.param == 3 && imagePost.posterName == 'benchMoon' &&
-                            <button
-                                className='button'
+                            <button className="btn btn-danger"
                                 onClick={() => { handleOpenDeleteModal(imagePost) }}
                             >
                                 Delete Image
@@ -116,6 +146,12 @@ function Home(props) {
             </div>
         );
     }
+
+    // useEffect(() => {
+    //     showData = unsplashData && unsplashData.unsplashImages.map((imagePost) => {
+    //         return buildPage(imagePost);
+    //     });
+    // }, [unsplashData])
 
     if (props.param == 1) {
         showData = unsplashData && unsplashData.unsplashImages.map((imagePost) => {
@@ -131,6 +167,7 @@ function Home(props) {
         });
     }
 
+
     if ((props.param == 1 && unsplashData) || (props.param == 2 && binData) || (props.param == 3 && postData)) {
         return (
             <div>
@@ -139,13 +176,29 @@ function Home(props) {
                         className='button'>
                         <a href="/new-post">New Post</a>
                     </Button>}
-                {showData}
+                {/* <Grid container className={classes.grid} spacing={8}> */}
+                <div class="container" >
+                <div class="row row-cols-4">
+                    {showData}
+                    </div>
+                </div>
+                {/* </Grid> */}
+                <br></br>
+                <br></br>
                 {
-                    props.param == 1 &&
-                    <Button variant="outlined" margin="0 auto" onClick={() => readMoreBtn(1)}>
+                    props.param == 1 &&<div class="text-center ">
+                    <button className="btn btn-info btn-lg " margin="100 auto" onClick={() => readMoreBtn(1)}>
                         Read More
-                    </Button>
+                    </button>
+                    </div>
+
                 }
+                                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
+                <br></br>
 
                 {showDeleteModal && showDeleteModal && (
                     <DeletePostModal
@@ -158,11 +211,9 @@ function Home(props) {
         )
     } else if ((props.param == 1 && loading1) || (props.param == 2 && loading2) || ((props.param == 3 && loading3))) {
         return <div>Loading</div>;
-    } else if ((props.param == 1 && error1) || (props.param == 2 && error2) || (props.param == 3 && error3) ) {
+    } else if ((props.param == 1 && error1) || (props.param == 2 && error2) || (props.param == 3 && error3)) {
         return <div>{error1.message || error2.message || error3.message}</div>;
     }
 }
-
-
 
 export default Home;

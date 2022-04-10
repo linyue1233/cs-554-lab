@@ -133,7 +133,6 @@ const resolvers = {
                 let temp = JSON.parse(item);
                 if (temp.id == args.id) {
                     deletedPost = temp;
-                    console.log(111);
                     break;
                 }
             }
