@@ -80,7 +80,7 @@ const resolvers = {
                 userPosted: true
             }
 
-            await client.lpush(args.posterName, JSON.stringify(newImage));
+            await client.lpush("benchMoon", JSON.stringify(newImage));
             return newImage;
         },
         updateImage: async (_, args) => {
@@ -129,6 +129,8 @@ const resolvers = {
         deleteImage: async (_, args) => {
             let deletedPost;
             let allPosts = await getRes('benchMoon');
+            let allBinPosts = await getRes('benchMoonBin');
+            let deletBin;
             for (let item of allPosts) {
                 let temp = JSON.parse(item);
                 if (temp.id == args.id) {
@@ -136,7 +138,15 @@ const resolvers = {
                     break;
                 }
             }
+            for (let item of allBinPosts) {
+                let temp = JSON.parse(item);
+                if (temp.id == args.id) {
+                    deletBin = temp;
+                    break;
+                }
+            }
             await client.lrem('benchMoon', 0, JSON.stringify(deletedPost));
+            await client.lrem('benchMoonBin', 0, JSON.stringify(deletBin));
             return deletedPost;
         }
     }

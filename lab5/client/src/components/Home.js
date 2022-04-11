@@ -49,12 +49,10 @@ function Home(props) {
     const [pageNum, setPageNum] = useState(1);
     const [deletePost, setDeletePost] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [dataList, setDataList] = useState([]);
     const classes = useStyles();
-    const [fetchStatus, setfetchStatus] = useState(true);
     let showData = null;
 
-    const { loading: loading1, error: error1, data: unsplashData, refetch } = useQuery(querys.GET_UNSPLASHPOSTS, {
+    const { loading: loading1, error: error1, data: unsplashData } = useQuery(querys.GET_UNSPLASHPOSTS, {
         variables: { pageNum },
         fetchPolicy: 'cache-first'
     });
@@ -97,6 +95,7 @@ function Home(props) {
 
     const buildPage = (imagePost) => {
         return (
+            <ul key={imagePost.id}>
             <div className='card' key={imagePost.id}>
                 <div className='card-body'>
                     <h5 className='card-title'>
@@ -144,14 +143,10 @@ function Home(props) {
                     {/* not in bin */}
                 </div>
             </div>
+            </ul>
+
         );
     }
-
-    // useEffect(() => {
-    //     showData = unsplashData && unsplashData.unsplashImages.map((imagePost) => {
-    //         return buildPage(imagePost);
-    //     });
-    // }, [unsplashData])
 
     if (props.param == 1) {
         showData = unsplashData && unsplashData.unsplashImages.map((imagePost) => {
@@ -177,16 +172,19 @@ function Home(props) {
                         <a href="/new-post">New Post</a>
                     </Button>}
                 {/* <Grid container className={classes.grid} spacing={8}> */}
-                <div class="container" >
-                <div class="row row-cols-4">
+                <br></br>
+                <br></br>
+                <br></br>
+                {props.param == 2 && binData && binData.binnedImages.length === 0 && <p>There are no binned images, you can add now.</p>}
+                {props.param == 3 && postData && postData.userPostedImages.length === 0 && <p>You haven't posted yet. Post your fisting image!</p>}
+                <div className="container" >
                     {showData}
-                    </div>
                 </div>
                 {/* </Grid> */}
                 <br></br>
                 <br></br>
                 {
-                    props.param == 1 &&<div class="text-center ">
+                    props.param == 1 &&<div className="text-center ">
                     <button className="btn btn-info btn-lg " margin="100 auto" onClick={() => readMoreBtn(1)}>
                         Read More
                     </button>

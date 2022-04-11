@@ -26,13 +26,13 @@ function App() {
               This is Binterest website!
             </h1>
             <nav>
-              <NavLink className='navlink' to='/'>
-                Home
-              </NavLink>
+              
               <NavLink className='navlink' to='/my-bin'>
                 my-bin
               </NavLink>
-
+              <NavLink className='navlink' to='/'>
+                Home
+              </NavLink>
               <NavLink className='navlink' to='/my-posts'>
                 my-post
               </NavLink>
